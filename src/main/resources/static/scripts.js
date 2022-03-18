@@ -19,25 +19,25 @@ $(document).ready(function() {
 });
 
 function connect() {
-    var socket = new SockJS('/our-websocket');
+    var socket = new SockJS('/ws-stomp');
     stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
         console.log('Connected: ' + frame);
         updateNotificationDisplay();
-        stompClient.subscribe('/topic/messages', function (message) {
+        stompClient.subscribe('/sub/messages', function (message) {
             showMessage(JSON.parse(message.body).content);
         });
 
-        stompClient.subscribe('/user/topic/private-messages', function (message) {
+        stompClient.subscribe('/user/sub/private-messages', function (message) {
             showMessage(JSON.parse(message.body).content);
         });
 
-        stompClient.subscribe('/topic/global-notifications', function (message) {
+        stompClient.subscribe('/sub/global-notifications', function (message) {
             notificationCount = notificationCount + 1;
             updateNotificationDisplay();
         });
 
-        stompClient.subscribe('/user/topic/private-notifications', function (message) {
+        stompClient.subscribe('/user/sub/private-notifications', function (message) {
             notificationCount = notificationCount + 1;
             updateNotificationDisplay();
         });
@@ -48,16 +48,18 @@ function showMessage(message) {
     $("#messages").append("<tr><td>" + message + "</td></tr>");
 }
 
+// send message : config.setApplicationDestinationPrefixes("/pub");
 function sendMessage() {
     console.log("sending message");
-    stompClient.send("/ws/message", {}, JSON.stringify({'messageContent': $("#message").val()}));
+    stompClient.send("/topic/message", {}, JSON.stringify({'messageContent': $("#message").val()}));
 }
 
 function sendPrivateMessage() {
     console.log("sending private message");
-    stompClient.send("/ws/private-message", {}, JSON.stringify({'messageContent': $("#private-message").val()}));
+    stompClient.send("/pub/private-message", {}, JSON.stringify({'messageContent': $("#private-message").val()}));
 }
 
+// 알람 업데이트 해주기
 function updateNotificationDisplay() {
     if (notificationCount == 0) {
         $('#notifications').hide();
