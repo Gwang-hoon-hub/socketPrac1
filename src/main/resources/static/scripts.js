@@ -28,7 +28,7 @@ function connect() {
             showMessage(JSON.parse(message.body).content);
         });
 
-        stompClient.subscribe('/user/sub/private-messages', function (message) {
+        stompClient.subscribe('/sub/private-messages', function (message) {
             showMessage(JSON.parse(message.body).content);
         });
 
@@ -37,7 +37,7 @@ function connect() {
             updateNotificationDisplay();
         });
 
-        stompClient.subscribe('/user/sub/private-notifications', function (message) {
+        stompClient.subscribe('/sub/private-notifications', function (message) {
             notificationCount = notificationCount + 1;
             updateNotificationDisplay();
         });
@@ -51,7 +51,7 @@ function showMessage(message) {
 // send message : config.setApplicationDestinationPrefixes("/pub");
 function sendMessage() {
     console.log("sending message");
-    stompClient.send("/topic/message", {}, JSON.stringify({'messageContent': $("#message").val()}));
+    stompClient.send("/pub/message", {}, JSON.stringify({'messageContent': $("#message").val()}));
 }
 
 function sendPrivateMessage() {

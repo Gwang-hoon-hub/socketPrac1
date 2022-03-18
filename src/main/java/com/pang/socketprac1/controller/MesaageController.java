@@ -28,7 +28,7 @@ public class MesaageController {
     }
 
     @MessageMapping("/private-message")
-    @SendToUser("/sub/private-message")
+    @SendToUser("/sub/private-messages")
     public ResponseMessage getPrivateMessage(Message message,
                                              Principal principal) throws InterruptedException {
         Thread.sleep(1000);
